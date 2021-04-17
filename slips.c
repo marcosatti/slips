@@ -7,20 +7,20 @@
 #define ESC_END 0334
 #define ESC_ESC 0335
 
-bool slips_send_packet(const slips_context *context)
+bool slips_send_packet(const slips_context_t *context)
 {
     char c;
     bool eof;
 
     if (context->send_start)
     {
-        if (!context->encode_send_char(END, context->user_data))
+        if (!context->encode_send_char_fn(END, context->user_data))
             return false;
     }
 
     while (true)
     {
-        if (!context->encode_read_char(&c, &eof, context->user_data))
+        if (!context->encode_read_char_fn(&c, &eof, context->user_data))
             return false;
 
         if (eof)
@@ -29,39 +29,39 @@ bool slips_send_packet(const slips_context *context)
         switch (c)
         {
         case END:
-            if (!context->encode_send_char(ESC, context->user_data))
+            if (!context->encode_send_char_fn(ESC, context->user_data))
                 return false;
-            if (!context->encode_send_char(ESC_END, context->user_data))
+            if (!context->encode_send_char_fn(ESC_END, context->user_data))
                 return false;
             break;
 
         case ESC:
-            if (!context->encode_send_char(ESC, context->user_data))
+            if (!context->encode_send_char_fn(ESC, context->user_data))
                 return false;
-            if (!context->encode_send_char(ESC_ESC, context->user_data))
+            if (!context->encode_send_char_fn(ESC_ESC, context->user_data))
                 return false;
             break;
 
         default:
-            if (!context->encode_send_char(c, context->user_data))
+            if (!context->encode_send_char_fn(c, context->user_data))
                 return false;
         }
     }
 
-    if (!context->encode_send_char(END, context->user_data))
+    if (!context->encode_send_char_fn(END, context->user_data))
         return false;
 
     return true;
 }
 
-bool slip_recv_packet(const slips_context *context)
+bool slip_recv_packet(const slips_context_t *context)
 {
     char c;
     bool initial = true;
 
     while (true)
     {
-        if (!context->decode_recv_char(&c, context->user_data))
+        if (!context->decode_recv_char_fn(&c, context->user_data))
             return false;
 
         if (initial && context->check_start) 
@@ -80,7 +80,7 @@ bool slip_recv_packet(const slips_context *context)
             break;
 
         case ESC:
-            if (!context->decode_recv_char(&c, context->user_data))
+            if (!context->decode_recv_char_fn(&c, context->user_data))
                 return false;
 
             switch (c)
@@ -95,7 +95,7 @@ bool slip_recv_packet(const slips_context *context)
             }
 
         default:
-            if (!context->decode_write_char(c, context->user_data))
+            if (!context->decode_write_char_fn(c, context->user_data))
                 return false;
         }
     }

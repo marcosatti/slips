@@ -21,7 +21,7 @@
  * \param user_data User data.
  * \return If the callback succeeded or not.
  */
-typedef bool (*slips_encode_send_char_fn)(char c, void *user_data);
+typedef bool (*slips_encode_send_char_fn_t)(char c, void *user_data);
 
 /** 
  * \brief Encode buffer read byte callback.
@@ -30,7 +30,7 @@ typedef bool (*slips_encode_send_char_fn)(char c, void *user_data);
  * \param user_data User data.
  * \return If the callback succeeded or not.
  */
-typedef bool (*slips_encode_read_char_fn)(char *c, bool *eof, void *user_data);
+typedef bool (*slips_encode_read_char_fn_t)(char *c, bool *eof, void *user_data);
 
 /** 
  * \brief Receive character callback.
@@ -38,7 +38,7 @@ typedef bool (*slips_encode_read_char_fn)(char *c, bool *eof, void *user_data);
  * \param user_data User data.
  * \return If the callback succeeded or not.
  */
-typedef bool (*slips_decode_recv_char_fn)(char *c, void *user_data);
+typedef bool (*slips_decode_recv_char_fn_t)(char *c, void *user_data);
 
 /** 
  * \brief Decode buffer write byte callback.
@@ -46,32 +46,32 @@ typedef bool (*slips_decode_recv_char_fn)(char *c, void *user_data);
  * \param user_data User data.
  * \return If the callback succeeded or not.
  */
-typedef bool (*slips_decode_write_char_fn)(char c, void *user_data);
+typedef bool (*slips_decode_write_char_fn_t)(char c, void *user_data);
 
 /** 
  * \brief SLIPS configuration.
  * Depending on the function used, some of these variables can be set to NULL / arbitrary.
  */
-typedef struct SLIPS_CONTEXT {
-    slips_encode_send_char_fn encode_send_char;
-    slips_encode_read_char_fn encode_read_char;
-    slips_decode_recv_char_fn decode_recv_char;
-    slips_decode_write_char_fn decode_write_char;
+typedef struct SLIPS_CONTEXT_T {
+    slips_encode_send_char_fn_t encode_send_char_fn;
+    slips_encode_read_char_fn_t encode_read_char_fn;
+    slips_decode_recv_char_fn_t decode_recv_char_fn;
+    slips_decode_write_char_fn_t decode_write_char_fn;
     bool send_start; /**< When encoding a packet, send an initial END byte */
     bool check_start; /**< Check the start of the packet for the END byte. */
     void *user_data; /**< User data parameter forwarded to the callbacks. */
-} slips_context;
+} slips_context_t;
 
 /** 
  * \brief Encode & send an arbitrary length packet with SLIP encoding.
  * \return Successful in encoding & sending a full SLIP's packet or not.
  */
-bool slips_send_packet(const slips_context *context);
+bool slips_send_packet(const slips_context_t *context);
 
 /** 
  * \brief Receive & decode an arbitrary length packet with SLIP encoding.
  * \return Successful in receiving & decoding a full SLIP's packet or not.
  */
-bool slips_recv_packet(const slips_context *context);
+bool slips_recv_packet(const slips_context_t *context);
 
 #endif
