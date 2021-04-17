@@ -76,13 +76,13 @@ void slips_deinit(void);
 
 /** 
  * \brief Encode & send an arbitrary length packet with SLIP encoding.
- * \return Successful or not (callback error).
+ * \return Successful in encoding & sending a full SLIP's packet or not.
  */
 bool slips_send_packet(void);
 
 /** 
  * \brief Receive & decode an arbitrary length packet with SLIP encoding.
- * \return Successful or not (callback error).
+ * \return Successful in receiving & decoding a full SLIP's packet or not.
  */
 bool slips_recv_packet(void);
 
