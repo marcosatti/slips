@@ -7,30 +7,20 @@
 #define ESC_END 0334
 #define ESC_ESC 0335
 
-static slips_config *config;
-
-void slips_init(slips_config *config_) {
-    config = config_;
-}
-
-void slips_deinit(void) {
-    config = NULL;
-}
-
-bool slips_send_packet(void)
+bool slips_send_packet(const slips_context *context)
 {
     char c;
     bool eof;
 
-    if (config->send_start)
+    if (context->send_start)
     {
-        if (!config->encode_send_char(END, config->user_data))
+        if (!context->encode_send_char(END, context->user_data))
             return false;
     }
 
     while (true)
     {
-        if (!config->encode_read_char(&c, &eof, config->user_data))
+        if (!context->encode_read_char(&c, &eof, context->user_data))
             return false;
 
         if (eof)
@@ -39,42 +29,42 @@ bool slips_send_packet(void)
         switch (c)
         {
         case END:
-            if (!config->encode_send_char(ESC, config->user_data))
+            if (!context->encode_send_char(ESC, context->user_data))
                 return false;
-            if (!config->encode_send_char(ESC_END, config->user_data))
+            if (!context->encode_send_char(ESC_END, context->user_data))
                 return false;
             break;
 
         case ESC:
-            if (!config->encode_send_char(ESC, config->user_data))
+            if (!context->encode_send_char(ESC, context->user_data))
                 return false;
-            if (!config->encode_send_char(ESC_ESC, config->user_data))
+            if (!context->encode_send_char(ESC_ESC, context->user_data))
                 return false;
             break;
 
         default:
-            if (!config->encode_send_char(c, config->user_data))
+            if (!context->encode_send_char(c, context->user_data))
                 return false;
         }
     }
 
-    if (!config->encode_send_char(END, config->user_data))
+    if (!context->encode_send_char(END, context->user_data))
         return false;
 
     return true;
 }
 
-bool slip_recv_packet(void)
+bool slip_recv_packet(const slips_context *context)
 {
     char c;
     bool initial = true;
 
     while (true)
     {
-        if (!config->decode_recv_char(&c, config->user_data))
+        if (!context->decode_recv_char(&c, context->user_data))
             return false;
 
-        if (initial && config->check_start) 
+        if (initial && context->check_start) 
         {
             initial = false;
 
@@ -90,7 +80,7 @@ bool slip_recv_packet(void)
             break;
 
         case ESC:
-            if (!config->decode_recv_char(&c, config->user_data))
+            if (!context->decode_recv_char(&c, context->user_data))
                 return false;
 
             switch (c)
@@ -105,7 +95,7 @@ bool slip_recv_packet(void)
             }
 
         default:
-            if (!config->decode_write_char(c, config->user_data))
+            if (!context->decode_write_char(c, context->user_data))
                 return false;
         }
     }

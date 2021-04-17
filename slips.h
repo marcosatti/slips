@@ -50,8 +50,9 @@ typedef bool (*slips_decode_write_char_fn)(char c, void *user_data);
 
 /** 
  * \brief SLIPS configuration.
+ * Depending on the function used, some of these variables can be set to NULL / arbitrary.
  */
-typedef struct SLIPS_CONFIG {
+typedef struct SLIPS_CONTEXT {
     slips_encode_send_char_fn encode_send_char;
     slips_encode_read_char_fn encode_read_char;
     slips_decode_recv_char_fn decode_recv_char;
@@ -59,31 +60,18 @@ typedef struct SLIPS_CONFIG {
     bool send_start; /**< When encoding a packet, send an initial END byte */
     bool check_start; /**< Check the start of the packet for the END byte. */
     void *user_data; /**< User data parameter forwarded to the callbacks. */
-} slips_config;
-
-/** 
- * \brief SLIPS library initialization. 
- * \warning Use this function first before any other library functions.
- * \param config Initialize with the given configuration.
- */
-void slips_init(slips_config *config);
-
-/** 
- * \brief SLIPS library deinitialization. 
- * \warning Do not use any other library functions after calling until re-initialized.
- */
-void slips_deinit(void);
+} slips_context;
 
 /** 
  * \brief Encode & send an arbitrary length packet with SLIP encoding.
  * \return Successful in encoding & sending a full SLIP's packet or not.
  */
-bool slips_send_packet(void);
+bool slips_send_packet(const slips_context *context);
 
 /** 
  * \brief Receive & decode an arbitrary length packet with SLIP encoding.
  * \return Successful in receiving & decoding a full SLIP's packet or not.
  */
-bool slips_recv_packet(void);
+bool slips_recv_packet(const slips_context *context);
 
 #endif
