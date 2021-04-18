@@ -54,7 +54,7 @@ bool slips_send_packet(const slips_send_context_t *context)
     return true;
 }
 
-bool slip_recv_packet(const slips_recv_context_t *context)
+bool slips_recv_packet(const slips_recv_context_t *context)
 {
     char c;
     bool initial = true;
