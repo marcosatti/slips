@@ -77,7 +77,7 @@ bool slips_recv_packet(const slips_recv_context_t *context)
         switch (c)
         {
         case END:
-            break;
+            goto out;
 
         case ESC:
             if (!context->decode_recv_char_fn(&c, context->user_data))
@@ -100,5 +100,6 @@ bool slips_recv_packet(const slips_recv_context_t *context)
         }
     }
 
+out:
     return true;
 }
