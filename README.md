@@ -9,10 +9,8 @@ Released under the MIT licence (See LICENCE.md).
 
 ## Basic Usage
 
-1. Initialize the library with the required configuration using `slips_init()`.
+1. Construct the relevant context type: `slips_send_context_t` or `slips_recv_context_t`.
 
-The configuration required a number of settings & encode/decode callbacks to be filled in. A `user_data` parameter is provided that will be forwarded directly into the callbacks for the application to use.
+The context requires a number of settings & encode/decode callbacks to be filled in. A `user_data` parameter is provided that will be forwarded directly into the callbacks for the application to use.
 
-2. Use the API functions `slips_send_packet()` and `slips_recv_packet()` to send and receive packets as required.
-
-3. De-initialize the library with `slips_deinit()` if required.
+2. Use the API functions `slips_send_packet()` or `slips_recv_packet()` to send / receive packets as required.

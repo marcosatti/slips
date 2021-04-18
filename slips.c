@@ -7,7 +7,7 @@
 #define ESC_END 0334
 #define ESC_ESC 0335
 
-bool slips_send_packet(const slips_context_t *context)
+bool slips_send_packet(const slips_send_context_t *context)
 {
     char c;
     bool eof;
@@ -54,7 +54,7 @@ bool slips_send_packet(const slips_context_t *context)
     return true;
 }
 
-bool slip_recv_packet(const slips_context_t *context)
+bool slip_recv_packet(const slips_recv_context_t *context)
 {
     char c;
     bool initial = true;
